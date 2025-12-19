@@ -647,6 +647,185 @@
             margin-bottom: 5px;
         }
 
+        /* タイトル画面 */
+        .title-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0a0f14 0%, #1a1f2e 50%, #0f1a20 100%);
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .title-screen.hidden {
+            display: none;
+        }
+
+        /* 背景の蜘蛛の巣アニメーション */
+        .web-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0.15;
+            background-image: 
+                radial-gradient(circle at 50% 50%, transparent 0%, transparent 40%, rgba(100,200,255,0.1) 41%, transparent 42%),
+                radial-gradient(circle at 50% 50%, transparent 0%, transparent 60%, rgba(100,200,255,0.08) 61%, transparent 62%),
+                radial-gradient(circle at 50% 50%, transparent 0%, transparent 80%, rgba(100,200,255,0.05) 81%, transparent 82%);
+            background-size: 100% 100%;
+            animation: webPulse 8s ease-in-out infinite;
+        }
+
+        .web-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(0deg, transparent 49.5%, rgba(100,200,255,0.1) 50%, transparent 50.5%),
+                linear-gradient(60deg, transparent 49.5%, rgba(100,200,255,0.1) 50%, transparent 50.5%),
+                linear-gradient(120deg, transparent 49.5%, rgba(100,200,255,0.1) 50%, transparent 50.5%);
+            background-size: 100% 100%;
+        }
+
+        @keyframes webPulse {
+            0%, 100% { transform: scale(1); opacity: 0.15; }
+            50% { transform: scale(1.05); opacity: 0.25; }
+        }
+
+        /* 浮遊する結晶 */
+        .floating-crystal {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, rgba(100,200,255,0.6), rgba(180,100,255,0.6));
+            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+            animation: floatCrystal 6s ease-in-out infinite;
+            filter: blur(1px);
+        }
+
+        @keyframes floatCrystal {
+            0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.6; }
+            50% { transform: translateY(-20px) rotate(180deg); opacity: 1; }
+        }
+
+        /* メイン繭アイコン */
+        .cocoon-icon {
+            width: 120px;
+            height: 160px;
+            position: relative;
+            margin-bottom: 30px;
+            animation: cocoonFloat 4s ease-in-out infinite;
+        }
+
+        .cocoon-body {
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at 50% 30%, #fff 0%, #e8e8f0 40%, #c0c0d0 100%);
+            border-radius: 50% 50% 45% 45%;
+            position: relative;
+            box-shadow: 
+                0 0 30px rgba(100,200,255,0.3),
+                0 0 60px rgba(100,200,255,0.2),
+                inset 0 -20px 40px rgba(100,150,200,0.2);
+        }
+
+        .cocoon-body::before {
+            content: '🌿';
+            position: absolute;
+            top: 25%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 24px;
+        }
+
+        @keyframes cocoonFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* タイトルテキスト */
+        .title-text {
+            font-size: 2.5em;
+            letter-spacing: 0.4em;
+            color: #fff;
+            text-shadow: 
+                0 0 10px rgba(100,200,255,0.8),
+                0 0 20px rgba(100,200,255,0.5),
+                0 0 40px rgba(100,200,255,0.3);
+            margin-bottom: 10px;
+            animation: titleGlow 3s ease-in-out infinite;
+        }
+
+        .title-sub {
+            font-size: 1em;
+            letter-spacing: 0.3em;
+            color: rgba(200,220,255,0.7);
+            margin-bottom: 40px;
+        }
+
+        @keyframes titleGlow {
+            0%, 100% { text-shadow: 0 0 10px rgba(100,200,255,0.8), 0 0 20px rgba(100,200,255,0.5); }
+            50% { text-shadow: 0 0 20px rgba(100,200,255,1), 0 0 40px rgba(100,200,255,0.8), 0 0 60px rgba(180,100,255,0.5); }
+        }
+
+        .start-btn {
+            padding: 15px 50px;
+            background: transparent;
+            border: 2px solid rgba(100,200,255,0.5);
+            color: #fff;
+            font-size: 1.1em;
+            letter-spacing: 0.2em;
+            cursor: pointer;
+            border-radius: 30px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .start-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(100,200,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .start-btn:hover::before {
+            left: 100%;
+        }
+
+        .start-btn:hover {
+            background: rgba(100,200,255,0.2);
+            box-shadow: 0 0 20px rgba(100,200,255,0.5);
+        }
+
+        /* 蝶のアニメーション */
+        .butterfly {
+            position: absolute;
+            font-size: 20px;
+            opacity: 0.6;
+            animation: butterflyFly 15s linear infinite;
+        }
+
+        @keyframes butterflyFly {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(100px, -50px) rotate(10deg); }
+            50% { transform: translate(50px, -100px) rotate(-5deg); }
+            75% { transform: translate(-50px, -30px) rotate(5deg); }
+            100% { transform: translate(0, 0) rotate(0deg); }
+        }
+
         /* セット管理 */
         .sets-grid {
             display: grid;
@@ -683,6 +862,32 @@
     </style>
 </head>
 <body>
+    <!-- タイトル画面 -->
+    <div class="title-screen" id="titleScreen">
+        <div class="web-bg"></div>
+        
+        <!-- 浮遊する結晶 -->
+        <div class="floating-crystal" style="top:15%;left:20%;animation-delay:0s;"></div>
+        <div class="floating-crystal" style="top:25%;left:75%;animation-delay:1s;width:15px;height:15px;"></div>
+        <div class="floating-crystal" style="top:60%;left:15%;animation-delay:2s;width:25px;height:25px;"></div>
+        <div class="floating-crystal" style="top:70%;left:80%;animation-delay:3s;"></div>
+        <div class="floating-crystal" style="top:40%;left:85%;animation-delay:1.5s;width:12px;height:12px;"></div>
+        
+        <!-- 蝶 -->
+        <div class="butterfly" style="top:30%;left:30%;animation-delay:0s;">🦋</div>
+        <div class="butterfly" style="top:50%;left:60%;animation-delay:5s;font-size:16px;">🦋</div>
+        
+        <!-- 繭アイコン -->
+        <div class="cocoon-icon">
+            <div class="cocoon-body"></div>
+        </div>
+        
+        <div class="title-text">繭繭庵</div>
+        <div class="title-sub">オラクルカード</div>
+        
+        <button class="start-btn" onclick="startApp()">はじめる</button>
+    </div>
+
     <div class="container">
         <h1>繭繭庵 オラクルカード</h1>
         
@@ -1276,7 +1481,6 @@
         function setupSpread(type, size) {
             const inner = document.getElementById('spread-inner');
             inner.innerHTML = '';
-            drawnCards = [];
             document.getElementById('result-info').style.display = 'none';
             
             const positions = getSpreadPositions(type, size);
@@ -1559,6 +1763,7 @@
         }
         
         function resetReading() {
+            drawnCards = [];
             if (currentSpread && currentSpreadSize) {
                 setupSpread(currentSpread, currentSpreadSize);
             }
@@ -1637,6 +1842,16 @@
         
         init();
         loadCrystals();
+        
+        // タイトル画面から開始
+        function startApp() {
+            const title = document.getElementById('titleScreen');
+            title.style.transition = 'opacity 0.5s';
+            title.style.opacity = '0';
+            setTimeout(() => {
+                title.classList.add('hidden');
+            }, 500);
+        }
     </script>
 </body>
 </html>
