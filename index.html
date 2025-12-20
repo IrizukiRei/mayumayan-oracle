@@ -906,6 +906,16 @@
                 <p>画像はブラウザに保存されます。データは端末に残ります。</p>
             </div>
 
+            <div class="info-box" style="background:rgba(255,200,100,0.1);border-color:rgba(255,200,100,0.3);">
+                <h3>💾 データ移行</h3>
+                <p style="margin-bottom:10px;">PC↔スマホ間でデータを移すにはエクスポート/インポートを使用</p>
+                <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                    <button class="btn" onclick="exportData()" style="padding:10px 15px;font-size:13px;">エクスポート</button>
+                    <input type="file" accept=".json" style="display:none" id="import-file" onchange="importData(this)">
+                    <button class="btn" onclick="document.getElementById('import-file').click()" style="padding:10px 15px;font-size:13px;">インポート</button>
+                </div>
+            </div>
+
             <div id="storage-warning" class="storage-warning" style="display:none;">
                 ⚠️ ストレージ使用量が多くなっています。画像サイズを小さくするか、不要なカードを削除してください。
             </div>
@@ -1842,6 +1852,79 @@
         
         init();
         loadCrystals();
+        
+        // エクスポート機能
+        function exportData() {
+            const data = {
+                version: 1,
+                exportDate: new Date().toISOString(),
+                masterCards: masterCards,
+                cardSets: cardSets,
+                currentSetName: currentSetName,
+                backCardImage: backCardImage,
+                crystals: JSON.parse(localStorage.getItem('oracleCrystals') || '[]')
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'mayumayan-oracle-backup.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            alert('エクスポート完了！\nファイルをスマホに送ってインポートしてください');
+        }
+        
+        // インポート機能
+        function importData(input) {
+            const file = input.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    
+                    if (!data.masterCards || !data.cardSets) {
+                        alert('無効なファイル形式です');
+                        return;
+                    }
+                    
+                    if (!confirm('現在のデータを上書きしますか？')) {
+                        return;
+                    }
+                    
+                    masterCards = data.masterCards;
+                    cardSets = data.cardSets;
+                    currentSetName = data.currentSetName || 'デフォルト';
+                    backCardImage = data.backCardImage || '';
+                    
+                    saveMasterCards();
+                    saveSets();
+                    localStorage.setItem('oracleCurrentSet', currentSetName);
+                    if (backCardImage) {
+                        localStorage.setItem('oracleBackImage', backCardImage);
+                    }
+                    if (data.crystals) {
+                        localStorage.setItem('oracleCrystals', JSON.stringify(data.crystals));
+                    }
+                    
+                    renderCards();
+                    updateActiveCount();
+                    updateBackPreview();
+                    updateStorageInfo();
+                    
+                    alert('インポート完了！');
+                } catch(err) {
+                    alert('ファイルの読み込みに失敗しました: ' + err.message);
+                }
+            };
+            reader.readAsText(file);
+            input.value = '';
+        }
         
         // タイトル画面から開始
         function startApp() {
