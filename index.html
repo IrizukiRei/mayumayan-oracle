@@ -1000,6 +1000,16 @@
                     固定配置系: 所定位置に固定 / グランタブロー: 出た位置をハイライト
                 </div>
             </div>
+
+            <div class="info-box">
+                <label style="display:flex;align-items:center;gap:10px;cursor:pointer;">
+                    <input type="checkbox" id="use-reversal-toggle" onchange="toggleReversal()" checked style="width:20px;height:20px;">
+                    <span>正逆を取る</span>
+                </label>
+                <div style="font-size:11px;color:#888;margin-top:5px;">
+                    OFFにするとカードは常に正位置で出ます（オラクルカード向け）
+                </div>
+            </div>
             
             <div id="error-container"></div>
             
@@ -1129,6 +1139,8 @@
         let backCardImage = '';
         let significatorId = null; // シグニフィケーター
         let useSignificator = false; // シグニフィケーター使用フラグ
+        let useReversal = true; // 正逆を取るかどうか
+        let useReversal = true; // 正逆を使用するか
         
         // 初期化
         function init() {
@@ -1169,6 +1181,11 @@
             const savedSig = localStorage.getItem('oracleSignificator');
             if (savedSig !== null) {
                 significatorId = parseInt(savedSig);
+            }
+            
+            const savedReversal = localStorage.getItem('oracleUseReversal');
+            if (savedReversal !== null) {
+                useReversal = savedReversal === 'true';
             }
             
             renderCards();
@@ -1306,6 +1323,10 @@
 
         function toggleSignificator() {
             useSignificator = document.getElementById('use-sig-toggle').checked;
+        }
+
+        function toggleReversal() {
+            useReversal = document.getElementById('use-reversal-toggle').checked;
         }
 
         // 画像をBase64に変換（リサイズ付き）
@@ -1887,7 +1908,7 @@
                         } else {
                             drawnCards.push({
                                 ...shuffled[shuffleIndex],
-                                isReversed: Math.random() < 0.5,
+                                isReversed: useReversal ? Math.random() < 0.5 : false,
                                 isSignificator: false
                             });
                             shuffleIndex++;
@@ -1896,7 +1917,7 @@
                 } else {
                     drawnCards = shuffled.slice(0, currentSpreadSize).map(card => ({
                         ...card,
-                        isReversed: Math.random() < 0.5,
+                        isReversed: useReversal ? Math.random() < 0.5 : false,
                         isSignificator: isShuffleSig && card.id === significatorId
                     }));
                 }
@@ -1959,7 +1980,7 @@
                     } else {
                         drawnCards.push({
                             ...shuffled[shuffleIndex],
-                            isReversed: Math.random() < 0.5,
+                            isReversed: useReversal ? Math.random() < 0.5 : false,
                             isSignificator: false
                         });
                         shuffleIndex++;
@@ -1968,7 +1989,7 @@
             } else {
                 drawnCards = shuffled.slice(0, currentSpreadSize).map(card => ({
                     ...card,
-                    isReversed: Math.random() < 0.5,
+                    isReversed: useReversal ? Math.random() < 0.5 : false,
                     isSignificator: isShuffleSig && card.id === significatorId
                 }));
             }
