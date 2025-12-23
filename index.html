@@ -2184,6 +2184,7 @@
         
         // タイトル画面から開始
         function startApp() {
+            console.log('startApp called');
             const title = document.getElementById('titleScreen');
             if (title) {
                 title.style.transition = 'opacity 0.5s';
@@ -2194,8 +2195,17 @@
             }
         }
         
-        init();
-        loadCrystals();
+        // 初期化（エラーがあってもtitleScreenは動くように）
+        try {
+            init();
+        } catch(e) {
+            console.error('init error:', e);
+        }
+        try {
+            loadCrystals();
+        } catch(e) {
+            console.error('loadCrystals error:', e);
+        }
         
         // エクスポート機能
         function exportData() {
