@@ -886,7 +886,7 @@
         <div class="title-text">繭繭庵</div>
         <div class="title-sub">オラクルカード</div>
         
-        <button class="start-btn" onclick="startApp()">はじめる</button>
+        <button class="start-btn" id="startBtn">はじめる</button>
     </div>
 
     <div class="container">
@@ -2206,6 +2206,26 @@
         } catch(e) {
             console.error('loadCrystals error:', e);
         }
+        
+        // タイトル画面ボタン（DOMContentLoaded後に設定）
+        document.addEventListener('DOMContentLoaded', function() {
+            var btn = document.getElementById('startBtn');
+            if (btn) {
+                btn.addEventListener('click', startApp);
+                btn.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    startApp();
+                });
+            }
+        });
+        
+        // 即時実行版も念のため
+        (function() {
+            var btn = document.getElementById('startBtn');
+            if (btn) {
+                btn.onclick = startApp;
+            }
+        })();
         
         // エクスポート機能
         function exportData() {
