@@ -1,4 +1,3 @@
-<!-- DEPLOY TEST 2025-12-25 19:35 -->
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -888,6 +887,14 @@
         <div class="title-sub">オラクルカード</div>
         
         <button class="start-btn" id="startBtn">はじめる</button>
+        <script>
+        document.getElementById('startBtn').onclick = function() {
+            document.getElementById('titleScreen').style.opacity = '0';
+            setTimeout(function() {
+                document.getElementById('titleScreen').style.display = 'none';
+            }, 500);
+        };
+        </script>
     </div>
 
     <div class="container">
