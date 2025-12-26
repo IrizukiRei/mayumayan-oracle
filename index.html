@@ -1035,7 +1035,7 @@
                     <h3>スリーカード</h3>
                     <p>3枚 / 過去現在未来</p>
                 </div>
-                <div class="spread-card" onclick="selectSpread('hexagram', 6)">
+                <div class="spread-card" onclick="selectSpread('hexagram', 7)">
                     <h3>ヘキサグラム</h3>
                     <p>6枚 / 多角的分析</p>
                 </div>
@@ -1713,13 +1713,19 @@
                     positions.push({x: cx, y: cy, label: '💎'});
                     break;
                 case 'hexagram':
-                    const hGap = isMobile ? 80 : 120;
-                    positions.push({x: cx - hGap, y: cy - 80, label: '過去'});
-                    positions.push({x: cx, y: cy - 80, label: '現在'});
-                    positions.push({x: cx + hGap, y: cy - 80, label: '未来'});
-                    positions.push({x: cx - hGap, y: cy + 80, label: '対策'});
-                    positions.push({x: cx, y: cy + 80, label: '周囲'});
-                    positions.push({x: cx + hGap, y: cy + 80, label: '結果'});
+                    // 六芒星配置（7枚）
+                    const hGap = isMobile ? 70 : 100;
+                    const hVGap = isMobile ? 60 : 80;
+                    // 上の三角（1,2,3）
+                    positions.push({x: cx, y: cy - hVGap * 1.5, label: '①'});  // 頂点
+                    positions.push({x: cx - hGap, y: cy + hVGap * 0.5, label: '②'});  // 左下
+                    positions.push({x: cx + hGap, y: cy + hVGap * 0.5, label: '③'});  // 右下
+                    // 下の三角（4,5,6）
+                    positions.push({x: cx - hGap, y: cy - hVGap * 0.5, label: '④'});  // 左上
+                    positions.push({x: cx + hGap, y: cy - hVGap * 0.5, label: '⑤'});  // 右上
+                    positions.push({x: cx, y: cy + hVGap * 1.5, label: '⑥'});  // 底
+                    // 中央（7）
+                    positions.push({x: cx, y: cy, label: '⑦'});
                     break;
                 case 'celtic':
                     const cGap = isMobile ? 80 : 120;
@@ -2069,6 +2075,10 @@
             document.getElementById('imageModal').classList.remove('show');
         }
         
+        // 補足カード用
+        let supplementCards = [];
+        const MAX_SUPPLEMENT = 3;
+        
         function showResults() {
             const resultDiv = document.getElementById('result-info');
             resultDiv.style.display = 'block';
@@ -2108,11 +2118,53 @@
                 html += `<div class="card-meaning" style="${sigStyle}"><strong>${label}: ${card.name} (${pos})${sigBadge}</strong><br>${card.description || '説明なし'}</div>`;
             });
             
+            // 補足カード表示
+            if (supplementCards.length > 0) {
+                html += `<h4 style="margin-top:20px;color:#ffcc66;">補足カード</h4>`;
+                supplementCards.forEach((card, i) => {
+                    const pos = card.isReversed ? '逆' : '正';
+                    html += `<div class="card-meaning" style="border-left:3px solid rgba(255,200,100,0.5);"><strong>補足${i + 1}: ${card.name} (${pos})</strong><br>${card.description || '説明なし'}</div>`;
+                });
+            }
+            
+            // 補足カードを引くボタン
+            const usedIds = [...drawnCards, ...supplementCards].map(c => c.id);
+            const remaining = getCurrentCards().filter(c => !usedIds.includes(c.id));
+            
+            if (supplementCards.length < MAX_SUPPLEMENT && remaining.length > 0) {
+                html += `<div style="margin-top:20px;text-align:center;">
+                    <button class="btn" onclick="drawSupplement()" style="background:rgba(255,200,100,0.3);border-color:rgba(255,200,100,0.8);">
+                        補足カードを引く（残り${MAX_SUPPLEMENT - supplementCards.length}枚まで）
+                    </button>
+                </div>`;
+            } else if (supplementCards.length >= MAX_SUPPLEMENT) {
+                html += `<div style="margin-top:15px;text-align:center;color:#888;font-size:12px;">補足カードは最大3枚まで</div>`;
+            }
+            
             resultDiv.innerHTML = html;
+        }
+        
+        function drawSupplement() {
+            const usedIds = [...drawnCards, ...supplementCards].map(c => c.id);
+            const remaining = getCurrentCards().filter(c => !usedIds.includes(c.id));
+            
+            if (remaining.length === 0) {
+                alert('引けるカードがありません');
+                return;
+            }
+            
+            const randomCard = remaining[Math.floor(Math.random() * remaining.length)];
+            supplementCards.push({
+                ...randomCard,
+                isReversed: useReversal ? Math.random() < 0.5 : false
+            });
+            
+            showResults();
         }
         
         function resetReading() {
             drawnCards = [];
+            supplementCards = []; // 補足カードもリセット
             if (currentSpread && currentSpreadSize) {
                 setupSpread(currentSpread, currentSpreadSize);
             }
