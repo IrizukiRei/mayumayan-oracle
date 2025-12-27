@@ -1769,6 +1769,13 @@
         }
         
         function shuffleAndDraw() {
+            // 補足カードをリセット
+            supplementCards = [];
+            const supArea = document.getElementById('supplement-area');
+            const supCards = document.getElementById('supplement-cards');
+            if (supArea) supArea.style.display = 'none';
+            if (supCards) supCards.innerHTML = '';
+            
             const activeCards = getCurrentCards();
             const sigCard = significatorId !== null ? masterCards.find(c => c.id === significatorId) : null;
             const isFixedSig = useSignificator && sigCard && ['one', 'two', 'neutralize', 'circle'].includes(currentSpread);
@@ -1970,6 +1977,13 @@
         }
         
         function skipShuffle() {
+            // 補足カードをリセット
+            supplementCards = [];
+            const supArea = document.getElementById('supplement-area');
+            const supCards = document.getElementById('supplement-cards');
+            if (supArea) supArea.style.display = 'none';
+            if (supCards) supCards.innerHTML = '';
+            
             const activeCards = getCurrentCards();
             const sigCard = significatorId !== null ? masterCards.find(c => c.id === significatorId) : null;
             const isFixedSig = useSignificator && sigCard && ['one', 'two', 'neutralize', 'circle'].includes(currentSpread);
