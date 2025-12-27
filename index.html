@@ -1082,6 +1082,12 @@
                 <div id="spread-inner" class="spread-inner"></div>
             </div>
             
+            <!-- 補足カード表示エリア -->
+            <div id="supplement-area" style="display:none;margin-top:20px;padding:15px;background:rgba(255,200,100,0.1);border:2px solid rgba(255,200,100,0.5);border-radius:12px;">
+                <h4 style="color:#ffcc66;margin-bottom:10px;font-size:14px;">補足カード</h4>
+                <div id="supplement-cards" style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;"></div>
+            </div>
+            
             <div id="result-info" class="result-info" style="display:none;"></div>
         </div>
 
@@ -2154,10 +2160,46 @@
             }
             
             const randomCard = remaining[Math.floor(Math.random() * remaining.length)];
-            supplementCards.push({
+            const newCard = {
                 ...randomCard,
                 isReversed: useReversal ? Math.random() < 0.5 : false
-            });
+            };
+            supplementCards.push(newCard);
+            
+            // 補足カード表示エリアを表示
+            const supArea = document.getElementById('supplement-area');
+            const supCards = document.getElementById('supplement-cards');
+            supArea.style.display = 'block';
+            
+            // カード要素を追加
+            const cardDiv = document.createElement('div');
+            cardDiv.style.cssText = 'width:70px;text-align:center;';
+            
+            const cardInner = document.createElement('div');
+            cardInner.style.cssText = `
+                width:70px;height:105px;
+                border-radius:6px;
+                overflow:hidden;
+                border:2px solid rgba(255,200,100,0.8);
+                box-shadow:0 0 10px rgba(255,200,100,0.5);
+                ${newCard.isReversed ? 'transform:rotate(180deg);' : ''}
+            `;
+            
+            if (newCard.imageData) {
+                cardInner.innerHTML = `<img src="${newCard.imageData}" style="width:100%;height:100%;object-fit:cover;">`;
+            } else {
+                cardInner.innerHTML = `<div style="width:100%;height:100%;background:#2a2a4a;display:flex;align-items:center;justify-content:center;font-size:10px;color:#888;">${newCard.name}</div>`;
+            }
+            
+            cardInner.onclick = () => showCardModal(newCard);
+            
+            const label = document.createElement('div');
+            label.style.cssText = 'font-size:10px;margin-top:5px;color:#ffcc66;';
+            label.textContent = `補足${supplementCards.length}`;
+            
+            cardDiv.appendChild(cardInner);
+            cardDiv.appendChild(label);
+            supCards.appendChild(cardDiv);
             
             showResults();
         }
@@ -2165,6 +2207,13 @@
         function resetReading() {
             drawnCards = [];
             supplementCards = []; // 補足カードもリセット
+            
+            // 補足カード表示エリアもクリア
+            const supArea = document.getElementById('supplement-area');
+            const supCards = document.getElementById('supplement-cards');
+            if (supArea) supArea.style.display = 'none';
+            if (supCards) supCards.innerHTML = '';
+            
             if (currentSpread && currentSpreadSize) {
                 setupSpread(currentSpread, currentSpreadSize);
             }
